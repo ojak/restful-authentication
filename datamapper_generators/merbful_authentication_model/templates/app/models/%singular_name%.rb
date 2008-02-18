@@ -1,5 +1,5 @@
 require 'digest/sha1'
-require 'authenticated_system_model'
+dependency 'authenticated_system_model'
 class <%= class_name %> < DataMapper::Base
   include AuthenticatedSystem::Model
   
