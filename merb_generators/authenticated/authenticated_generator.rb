@@ -126,81 +126,18 @@ class AuthenticatedGenerator < Merb::GeneratorBase
         :controller_full_path                     => controller_full_path,
         :model_controller_full_path               => model_controller_full_path
       }
-      # }
-      # m.dependency "merbful_authentication_model", [name], @assigns
-      # 
-      # 
-      # # Controller, helper, views, and test directories.
-      # 
+
       m.directory File.join('app/controllers', controller_class_path)
       m.directory File.join('app/controllers', model_controller_class_path)
-      # 
       m.directory File.join('app/helpers', controller_class_path)
-      # m.directory File.join('app/views', controller_class_path, controller_file_name)
-      # 
       m.directory File.join('app/controllers', model_controller_class_path)
       m.directory File.join('app/helpers', model_controller_class_path)
       
       copy_dirs
       copy_files
-      
-      # m.directory File.join('app/views', model_controller_class_path, model_controller_file_name)
-      # 
-      # # Generate the authenticated system" libraries
-      # m.directory "lib"
-      # m.template "authenticated_system_controller.rb",  "lib/authenticated_system_controller.rb"
-      # m.template "authenticated_system_model.rb",       "lib/authenticated_system_model.rb"
-      # 
-      # # Mailer directory for activation
-      # if options[:include_activation]
-      #   m.directory File.join('app/mailers/views', "#{singular_name}_mailer")
-      #   m.template  "mail_controller.rb",       File.join('app/mailers', 
-      #                                                     "#{singular_name}_mailer.rb")
-      #   [:html, :text].each do |format|
-      #     [:signup, :activation].each do |action|
-      #       m.template "#{action}.#{format}.erb",   File.join('app/mailers/views',
-      #                                                         "#{singular_name}_mailer",
-      #                                                         "#{action}_notification.#{format}.erb")
-      #     end
-      #   end
-      # end
-      # 
-      # # Generate the sessions controller
-      # m.template "session_controller.rb", File.join('app/controllers', 
-      #                                               controller_class_path, 
-      #                                               "#{controller_file_name}.rb")
-      # 
-      # # Generate the model controller
-      # m.template "model_controller.rb",   File.join('app/controllers',
-      #                                               model_controller_class_path,
-      #                                               "#{model_controller_file_name}.rb")
-      #                                               
-      # # Controller templates
-      # m.template 'login.html.erb',  File.join('app/views', controller_class_path, controller_file_name, "new.html.erb")
-      # m.template 'new_model.html.erb', File.join('app/views', model_controller_class_path, model_controller_file_name, "new.html.erb")
-      # 
-      # 
-      # controller_attributes = {
-      #   :controller_name                          => controller_name,
-      #   :controller_class_path                    => controller_class_path,
-      #   :controller_file_path                     => controller_file_path,
-      #   :controller_class_nesting                 => controller_class_nesting,
-      #   :controller_class_nesting_depth           => controller_class_nesting_depth,
-      #   :controller_class_name                    => controller_class_name,
-      #   :controller_singular_name                 => controller_singular_name,
-      #   :controller_plural_name                   => controller_plural_name,
-      #   :model_controller_name                    => model_controller_name,
-      #   :model_controller_class_path              => model_controller_class_path,
-      #   :model_controller_file_path               => model_controller_file_path,
-      #   :model_controller_class_nesting           => model_controller_class_nesting,
-      #   :model_controller_class_nesting_depth     => model_controller_class_nesting_depth,
-      #   :model_controller_class_name              => model_controller_class_name,
-      #   :model_controller_singular_name           => model_controller_singular_name,
-      #   :model_controller_plural_name             => model_controller_plural_name,
-      #   :include_activation                       => options[:include_activation]
-      # }
       # # Generate the tests
-      # m.dependency "merbful_authentication_tests", [name], model_attributes.dup.merge!(controller_attributes)
+      m.dependency "merbful_authentication_tests", [name], model_attributes.dup.merge!(controller_attributes)
+      m.dependency "merbful_authentication_model", [name], @assigns
     end
     
     action = nil
