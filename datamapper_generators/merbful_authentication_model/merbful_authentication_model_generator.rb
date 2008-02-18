@@ -14,7 +14,6 @@ class MerbfulAuthenticationModelGenerator < Merb::GeneratorBase
     @base = File.dirname(__FILE__)
     super
     @name = args.shift
-    extract_options
     runtime_options.each do |k,v| 
       ivar_name = "@#{k}"
       self.instance_variable_set("@#{k}", v) unless ivar_name.include?("/")  
