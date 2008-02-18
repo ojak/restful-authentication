@@ -24,7 +24,6 @@ class MerbfulAuthenticationModelGenerator < Merb::GeneratorBase
   def manifest
     record do |m|
       @m = m
-      
       @assigns = {
         :name                 => name,  
         :class_name           => class_name,
@@ -36,10 +35,8 @@ class MerbfulAuthenticationModelGenerator < Merb::GeneratorBase
         :singular_name        => singular_name,
         :include_activation   => include_activation
       }
-      
       copy_dirs
-      copy_files
-      
+      copy_files        
     end
   end
 
