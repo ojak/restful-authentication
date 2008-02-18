@@ -7,7 +7,7 @@ class <%= model_controller_class_name %> < Application
   def new(<%= singular_name %> = {})
     only_provides :html
     @<%= singular_name %> = <%= class_name %>.new(<%= singular_name %>)
-    render @<%= singular_name %>
+    display @<%= singular_name %>
   end
   
   def create(<%= singular_name %>)
@@ -17,7 +17,7 @@ class <%= model_controller_class_name %> < Application
     if @<%= singular_name %>.save
       redirect_back_or_default('/')
     else
-      render :action => :new
+      render :new
     end
   end
   

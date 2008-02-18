@@ -15,6 +15,6 @@ class <%= migration_name %> < ActiveRecord::Migration
   end
 
   def self.down
-    drop_table "<%= singular_name %>"
+    drop_table "<%= plural_name %>"
   end
 end

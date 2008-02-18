@@ -19,7 +19,7 @@ class <%= controller_class_name %> < Application
       end
       redirect_back_or_default('/')
     else
-      render :action => "new"
+      render :new
     end
   end
 
