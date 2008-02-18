@@ -1,4 +1,4 @@
-class MerbfulAuthenticationTestsGenerator < RubiGen::Base
+class MerbfulAuthenticationTestsGenerator < Merb::GeneratorBase
   
   attr_reader   :name,  
                 :class_name, 
@@ -27,8 +27,8 @@ class MerbfulAuthenticationTestsGenerator < RubiGen::Base
                 :include_activation
   
   def initialize(runtime_args, runtime_options = {})
+    @base = File.dirname(__FILE__)
     super
-    usage if args.empty?
     @name = args.shift
     extract_options
     runtime_options.each{ |k,v| self.instance_variable_set("@#{k}", v) }    

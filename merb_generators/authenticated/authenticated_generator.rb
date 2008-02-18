@@ -127,7 +127,7 @@ class AuthenticatedGenerator < Merb::GeneratorBase
       copy_files
       # # Generate the tests
       m.dependency "merbful_authentication_tests", [name], @assigns
-      m.dependency "merbful_authentication_model", [name], @assigns
+      # m.dependency "merbful_authentication_model", [name], @assigns
     end
     
     action = nil
