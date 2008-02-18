@@ -1,3 +1,4 @@
+dependency "merb-mailer"
 class <%= class_name %>Mailer < Merb::MailController
   
   def signup_notification
