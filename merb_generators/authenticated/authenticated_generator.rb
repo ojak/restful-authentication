@@ -86,16 +86,6 @@ class AuthenticatedGenerator < Merb::GeneratorBase
         options[f] = options[:include_activation] ? true : false
       end
 
-      # # Check for class naming collisions.
-      # m.class_collisions controller_class_path,       "#{controller_class_name}", # Sessions Controller
-      #                                                 "Merb::#{controller_class_name}Helper"
-      # m.class_collisions model_controller_class_path, "#{model_controller_class_name}", # Model Controller
-      #                                                 "Merb::#{model_controller_class_name}Helper"
-      # m.class_collisions class_path,                  "#{class_name}", "#{class_name}Mailer"# , "#{class_name}MailerTest", "#{class_name}Observer"
-      # m.class_collisions [], 'AuthenticatedSystem::Controller', 'AuthenticatedSystem::Model'
-      # 
-      # # Generate the model first.  These can then throw an error when generating if there is no ORM present
-      # model_attributes = { 
       @assigns = {
         :class_name                               => class_name,
         :class_path                               => class_path, 
