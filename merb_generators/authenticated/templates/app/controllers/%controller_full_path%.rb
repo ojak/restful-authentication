@@ -1,4 +1,4 @@
-require 'lib/authenticated_system_controller'
+dependency 'authenticated_system_controller'
 class <%= controller_class_name %> < Application
 
   # Be sure to include AuthenticationSystem in Application Controller instead
