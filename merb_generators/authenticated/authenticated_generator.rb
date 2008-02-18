@@ -77,8 +77,9 @@ class AuthenticatedGenerator < Merb::GeneratorBase
       @m = m
       
       @choices = []
+      @choices << "app/mailers"
       Dir[File.join(@base, "templates", "app", "mailers", "**", "*")].each do |f|
-        @choices << relative(File.join("app","mailers",f))
+        @choices << relative(f)
       end
       
       @choices.each do |f|
