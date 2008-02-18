@@ -126,7 +126,7 @@ class AuthenticatedGenerator < Merb::GeneratorBase
       copy_dirs
       copy_files
       # # Generate the tests
-      m.dependency "merbful_authentication_tests", [name], model_attributes.dup.merge!(controller_attributes)
+      m.dependency "merbful_authentication_tests", [name], @assigns
       m.dependency "merbful_authentication_model", [name], @assigns
     end
     
