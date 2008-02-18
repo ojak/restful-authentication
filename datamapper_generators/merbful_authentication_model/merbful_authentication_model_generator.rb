@@ -1,4 +1,4 @@
-class MerbfulAuthenticationModelGenerator < RubiGen::Base
+class MerbfulAuthenticationModelGenerator < Merb::GeneratorBase
 
   attr_reader   :name,  
                 :class_name, 
@@ -11,6 +11,7 @@ class MerbfulAuthenticationModelGenerator < RubiGen::Base
                 :include_activation
   
   def initialize(runtime_args, runtime_options = {})
+    @base = File.dirname(__FILE__)
     super
     usage if args.empty?
     @name = args.shift
