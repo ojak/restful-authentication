@@ -22,15 +22,15 @@ class MerbfulAuthenticationModelGenerator < Merb::GeneratorBase
   def manifest
     record do |m|
       
-      @assigns { :name => name,  
-                 :class_name => class_name,
-                 :class_path => class_path, 
-                 :file_name => file_name, 
-                 :class_nesting => class_nesting, 
-                 :class_nesting_depth => class_nesting_depth, 
-                 :plural_name => plural_name, 
-                 :singular_name => singular_name,
-                 :include_activation => include_activation
+      @assigns = { :name => name,  
+                   :class_name => class_name,
+                   :class_path => class_path, 
+                   :file_name => file_name, 
+                   :class_nesting => class_nesting, 
+                   :class_nesting_depth => class_nesting_depth, 
+                   :plural_name => plural_name, 
+                   :singular_name => singular_name,
+                   :include_activation => include_activation
       }
       # Ensure appropriate folder(s) exists
       m.class_collisions [], 'AuthenticatedSystem::OrmMap'
