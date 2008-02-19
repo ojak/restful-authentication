@@ -1,3 +1,4 @@
+dependency "authenticated_routes"
 module AuthenticatedSystem
   module Controller
     protected
@@ -130,4 +131,8 @@ module AuthenticatedSystem
         return auth_data && auth_data[0] == 'Basic' ? Base64.decode64(auth_data[1]).split(':')[0..1] : [nil, nil] 
       end
   end
+end
+
+Merb::BootLoader.after_app_loads do
+  Application.send(:include, AuthenticatedSystem::Controller)
 end

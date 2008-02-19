@@ -1,8 +1,7 @@
+# require  'lib/authenticated_system_controller'
 dependency 'authenticated_system_controller'
+dependency 'merb_helpers', ">= 0.9"
 class <%= controller_class_name %> < Application
-
-  # Be sure to include AuthenticationSystem in Application Controller instead
-  include AuthenticatedSystem::Controller
   
   skip_before :login_required
   
@@ -10,8 +9,8 @@ class <%= controller_class_name %> < Application
     render
   end
 
-  def create(login = "", password = "")
-    self.current_<%= singular_name %> = <%= class_name %>.authenticate(login, password)
+  def create
+    self.current_<%= singular_name %> = <%= class_name %>.authenticate(params[:login], params[:password])
     if logged_in?
       if params[:remember_me] == "1"
         self.current_<%= singular_name %>.remember_me

@@ -1,5 +1,9 @@
 require 'digest/sha1'
-require 'authenticated_system_model'
+dependency 'authenticated_system_model'
+<% if include_activation -%>
+require 'merb-mailers'
+<% end -%>
+
 class <%= class_name %> < ActiveRecord::Base
   include AuthenticatedSystem::Model
   

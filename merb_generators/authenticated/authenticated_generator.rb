@@ -120,7 +120,7 @@ class AuthenticatedGenerator < Merb::GeneratorBase
       # Do these first to allow an error to be raised
       m.dependency "merbful_authentication_tests", [name], @assigns
       m.dependency "merbful_authentication_model", [name], @assigns
-
+      
       m.directory File.join('app/controllers', controller_class_path)
       m.directory File.join('app/controllers', model_controller_class_path)
       m.directory File.join('app/helpers', controller_class_path)
@@ -129,6 +129,8 @@ class AuthenticatedGenerator < Merb::GeneratorBase
       
       copy_dirs
       copy_files
+      
+
       
     end
     

@@ -9,7 +9,7 @@ describe "<%= controller_class_name %> Controller", "index action" do
   before(:each) do
     <%= class_name %>.clear_database_table
     @quentin = <%= class_name %>.create(valid_<%= singular_name %>_hash.with(:login => "quentin", :password => "test", :password_confirmation => "test"))
-    @controller = <%= controller_class_name %>.build(fake_request)
+    @controller = <%= controller_class_name %>.new(fake_request)
 <% if include_activation -%>
     @quentin.activate
 <% end -%>
@@ -30,7 +30,7 @@ describe "<%= controller_class_name %> Controller", "index action" do
   end
   
   it "should have a named route :login" do
-    controller.url(:login).should == "/login"
+    @controller.url(:login).should == "/login"
   end
   
   it "should have route to <%= controller_class_name %>#destroy from '/logout' via delete" do
@@ -48,22 +48,21 @@ describe "<%= controller_class_name %> Controller", "index action" do
   end
 
   it 'logins and redirects' do
-    post "/login", :login => 'quentin', :password => 'test'
-    session[:<%= singular_name %>].should_not be_nil
-    session[:<%= singular_name %>].should == @quentin.id
+    controller = post "/login", :login => 'quentin', :password => 'test'
+    controller.session[:<%= singular_name %>].should_not be_nil
+    controller.session[:<%= singular_name %>].should == @quentin.id
     controller.should redirect_to("/")
   end
    
   it 'fails login and does not redirect' do
-    post "/login", :login => 'quentin', :password => 'bad password'
-    session[:<%= singular_name %>].should be_nil
-    controller.template.should match(/^new\./)
-    controller.should be_success
+    controller.post "/login", :login => 'quentin', :password => 'bad password'
+    controller.session[:<%= singular_name %>].should be_nil
+    controller.should be_successful
   end
 
   it 'logs out' do
-    get("/logout"){|response| response.stub!(:current_<%= singular_name %>).and_return(@quentin) }
-    session[:<%= singular_name %>].should be_nil
+    controller = get("/logout"){|controller| controller.stub!(:current_<%= singular_name %>).and_return(@quentin) }
+    controller.session[:<%= singular_name %>].should be_nil
     controller.should redirect
   end
 

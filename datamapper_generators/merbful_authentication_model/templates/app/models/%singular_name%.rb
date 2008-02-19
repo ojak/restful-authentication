@@ -1,5 +1,8 @@
-require 'digest/sha1'
 dependency 'authenticated_system_model'
+<% if include_activation -%>
+require 'merb-mailers' 
+<% end -%>
+
 class <%= class_name %> < DataMapper::Base
   include AuthenticatedSystem::Model
   
