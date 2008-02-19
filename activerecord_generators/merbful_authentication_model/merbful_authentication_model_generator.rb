@@ -8,19 +8,29 @@ class MerbfulAuthenticationModelGenerator < Merb::GeneratorBase
                 :class_nesting_depth, 
                 :plural_name, 
                 :singular_name,
-                :include_activation
+                :include_activation,
+                :migration_name,
+                :migration_file_name
   
   def initialize(runtime_args, runtime_options = {})
     @base = File.dirname(__FILE__)
     super
-    usage if args.empty?
     @name = args.shift
     extract_options
-    runtime_options.each{ |k,v| self.instance_variable_set("@#{k}", v) }
+    runtime_options.each do |k,v| 
+      ivar_name = "@#{k}"
+      self.instance_variable_set("@#{k}", v) unless ivar_name.include?("/")  
+    end
   end
 
   def manifest
     record do |m|
+      @m = m
+      
+      highest_migration = Dir[Dir.pwd+'/schema/migrations/*'].map{|f| File.basename(f) =~ /^(\d+)/; $1}.max
+      @migration_file_name = format("%03d_%s", (highest_migration.to_i+1), "create_#{plural_name}")
+      @migration_name = "Create#{plural_name.gsub(/::/,'')}"
+      
       @assigns = { 
                  :name => name,  
                  :class_name => class_name,
@@ -30,18 +40,13 @@ class MerbfulAuthenticationModelGenerator < Merb::GeneratorBase
                  :class_nesting_depth => class_nesting_depth, 
                  :plural_name => plural_name, 
                  :singular_name => singular_name,
-                 :include_activation => options[:include_activation]
+                 :include_activation => options[:include_activation],
+                 :migration_name  => migration_name,
+                 :migration_file_name => migration_file_name
       }
-      # Ensure appropriate folder(s) exists
-      m.class_collisions [], 'AuthenticatedSystem::OrmMap'
-      
-      m.directory File.join('app/models', class_path)
-      m.directory File.join('lib')
       
       copy_dirs
       copy_files
-      
-      m.migration_template('migration.rb', 'schema/migrations', :migration_file_name => "create_#{plural_name}", :assigns => {:migration_name => "Create#{class_name.pluralize.gsub(/::/,'')}"})
     end
   end
 

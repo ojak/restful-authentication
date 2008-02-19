@@ -75,7 +75,7 @@ class AuthenticatedGenerator < Merb::GeneratorBase
   def manifest
     manifest_result = record do |m|
       @m = m
-      
+          
       @choices = []
       @choices << "app/mailers"
       Dir[File.join(@base, "templates", "app", "mailers", "**", "*")].each do |f|
@@ -116,6 +116,10 @@ class AuthenticatedGenerator < Merb::GeneratorBase
         :controller_full_path                     => controller_full_path,
         :model_controller_full_path               => model_controller_full_path
       }
+      
+      # Do these first to allow an error to be raised
+      m.dependency "merbful_authentication_tests", [name], @assigns
+      m.dependency "merbful_authentication_model", [name], @assigns
 
       m.directory File.join('app/controllers', controller_class_path)
       m.directory File.join('app/controllers', model_controller_class_path)
@@ -125,9 +129,7 @@ class AuthenticatedGenerator < Merb::GeneratorBase
       
       copy_dirs
       copy_files
-      # # Generate the tests
-      m.dependency "merbful_authentication_tests", [name], @assigns
-      m.dependency "merbful_authentication_model", [name], @assigns
+      
     end
     
     action = nil
