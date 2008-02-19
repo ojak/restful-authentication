@@ -29,7 +29,7 @@ class MerbfulAuthenticationModelGenerator < Merb::GeneratorBase
       
       highest_migration = Dir[Dir.pwd+'/schema/migrations/*'].map{|f| File.basename(f) =~ /^(\d+)/; $1}.max
       @migration_file_name = format("%03d_%s", (highest_migration.to_i+1), "create_#{plural_name}")
-      @migration_name = "Create#{plural_name.gsub(/::/,'')}"
+      @migration_name = "Create#{plural_name.camelcase.gsub(/::/,'')}"
       
       @assigns = { 
                  :name => name,  
