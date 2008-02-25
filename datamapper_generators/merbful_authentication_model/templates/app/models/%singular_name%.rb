@@ -1,8 +1,9 @@
-dependency 'authenticated_system_model'
-<% if include_activation -%>
-require 'merb-mailers' 
-<% end -%>
-
+require 'digest/sha1'
+begin
+  require File.join(File.dirname(__FILE__), '..', '..', "lib", "authenticated_system", "authenticated_dependencies")
+rescue 
+  nil
+end
 class <%= class_name %> < DataMapper::Base
   include AuthenticatedSystem::Model
   

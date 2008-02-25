@@ -1,4 +1,4 @@
-dependency 'merb_helpers', ">= 0.9"
+require File.join(File.dirname(__FILE__), '..', '..', "lib", "authenticated_system", "authenticated_dependencies")
 class <%= model_controller_class_name %> < Application
   provides :xml
   

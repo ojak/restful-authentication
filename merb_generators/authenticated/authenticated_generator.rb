@@ -194,7 +194,7 @@ class AuthenticatedGenerator < Merb::GeneratorBase
     end
     
     def assign_names!(name)
-      @name = name
+      @name = name.singularize
       base_name, @class_path, @file_name, @class_nesting, @class_nesting_depth = extract_modules(@name)
       @class_name_without_nesting, @singular_name, @plural_name = inflect_names(base_name)
       @table_name = @name.pluralize

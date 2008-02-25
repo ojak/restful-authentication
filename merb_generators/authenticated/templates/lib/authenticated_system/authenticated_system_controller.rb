@@ -1,4 +1,3 @@
-dependency "authenticated_routes"
 module AuthenticatedSystem
   module Controller
     protected

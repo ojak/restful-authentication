@@ -1,6 +1,5 @@
 # require  'lib/authenticated_system_controller'
-dependency 'authenticated_system_controller'
-dependency 'merb_helpers', ">= 0.9"
+require File.join(File.dirname(__FILE__), '..', '..', "lib", "authenticated_system", "authenticated_dependencies")
 class <%= controller_class_name %> < Application
   
   skip_before :login_required

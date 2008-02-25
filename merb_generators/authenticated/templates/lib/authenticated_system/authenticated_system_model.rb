@@ -1,4 +1,4 @@
-require 'authenticated_system_orm_map'
+
 module AuthenticatedSystem
   module Model
     

@@ -1,9 +1,9 @@
 require 'digest/sha1'
-dependency 'authenticated_system_model'
-<% if include_activation -%>
-require 'merb-mailers'
-<% end -%>
-
+begin
+  require File.join(File.dirname(__FILE__), '..', '..', "lib", "authenticated_system", "authenticated_dependencies")
+rescue 
+  nil
+end
 class <%= class_name %> < ActiveRecord::Base
   include AuthenticatedSystem::Model
   
