@@ -51,7 +51,7 @@ describe <%= model_controller_class_name %> do
    
 <% if include_activation -%>
    it "should have a route for <%= singular_name %> activation" do
-     with_route("/<%= model_controller_plural_name %>/activate/1234") do |params|
+     request_to("/<%= model_controller_singular_name %>/activate/1234") do |params|
        params[:controller].should == "<%= model_controller_class_name %>"
        params[:action].should == "activate" 
        params[:activation_code].should == "1234"    
@@ -62,13 +62,8 @@ describe <%= model_controller_class_name %> do
      controller = create_<%= singular_name %>(:login => "aaron", :password => "test", :password_confirmation => "test")
      @<%= singular_name %> = controller.assigns(:<%= singular_name %>)
      <%= class_name %>.authenticate('aaron', 'test').should be_nil
-     controller = get "/<%= model_controller_plural_name %>/activate/1234" 
+     controller = get "/<%= model_controller_singular_name %>/activate/1234" 
      controller.should redirect_to("/")
-   end
-
-   it 'does not activate <%= singular_name %> without key' do
-       controller = get "/<%= model_controller_singular_name %>/activate"
-       controller.should be_missing
    end
 <% end -%>
      
