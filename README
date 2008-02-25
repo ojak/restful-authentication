@@ -30,7 +30,8 @@ Datamapper
 
 === Required Routes
 
-At the moment this version of the plugin requires some named routes
+At the moment this version of the plugin requires some named routes.  These are included in 
+lib/authenticated_system/authenticated_routes.rb
     
     In config/router.rb
     
