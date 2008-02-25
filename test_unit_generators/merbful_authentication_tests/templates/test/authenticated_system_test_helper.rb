@@ -1,13 +1,16 @@
-class Merb::Controller
-  require "merb/session/memory_session"
-  Merb::MemorySessionContainer.setup
-  include ::Merb::SessionMixin
-  self.session_secret_key = "foo to the bar to the baz"
+Merb::Config.use do |c|
+  c[:session_store] = "memory"
 end
 
+[Merb::Test::ControllerHelper, Merb::Test::ViewHelper, Merb::Test::RouteHelper].each do |m|
+  Merb::Test::Helpers.send(:include, m)
+end
+
+<% if include_activation -%>
 class Merb::Mailer
   self.delivery_method = :test_send
 end
+<% end -%>
 
 class Hash
   
@@ -20,7 +23,6 @@ class Hash
   end
   
 end
-
 # Assert difference(s) methods were taken from RubyOnRails to support the port of restful_authentication
 
 def assert_difference(expressions, difference = 1, message = nil, &block)
