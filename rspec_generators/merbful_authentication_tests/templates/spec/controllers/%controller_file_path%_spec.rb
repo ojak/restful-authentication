@@ -16,14 +16,14 @@ describe "<%= controller_class_name %> Controller", "index action" do
   end
   
   it "should have a route to <%= controller_class_name %>#new from '/login'" do
-    with_route("/login") do |params|
+    request_to("/login") do |params|
       params[:controller].should == "<%= controller_class_name %>"
       params[:action].should == "create"
     end   
   end
   
   it "should route to <%= controller_class_name %>#create from '/login' via post" do
-    with_route("/login", "POST") do |params|
+    request_to("/login", :post) do |params|
       params[:controller].should  == "<%= controller_class_name %>"
       params[:action].should      == "create"
     end      
@@ -34,14 +34,14 @@ describe "<%= controller_class_name %> Controller", "index action" do
   end
   
   it "should have route to <%= controller_class_name %>#destroy from '/logout' via delete" do
-    with_route("/logout", "DELETE") do |params|
+    request_to("/logout", :delete) do |params|
       params[:controller].should == "<%= controller_class_name %>"
       params[:action].should    == "destroy"
     end   
   end
   
   it "should route to <%= controller_class_name %>#destroy from '/logout' via get" do
-    with_route("/logout", "GET") do |params|
+    request_to("/logout") do |params|
       params[:controller].should == "<%= controller_class_name %>" 
       params[:action].should     == "destroy"
     end
@@ -55,7 +55,7 @@ describe "<%= controller_class_name %> Controller", "index action" do
   end
    
   it 'fails login and does not redirect' do
-    controller.post "/login", :login => 'quentin', :password => 'bad password'
+    controller = post "/login", :login => 'quentin', :password => 'bad password'
     controller.session[:<%= singular_name %>].should be_nil
     controller.should be_successful
   end
@@ -67,25 +67,25 @@ describe "<%= controller_class_name %> Controller", "index action" do
   end
 
   it 'remembers me' do
-    post "/login", :login => 'quentin', :password => 'test', :remember_me => "1"
-    cookies["auth_token"].should_not be_nil
+    controller = post "/login", :login => 'quentin', :password => 'test', :remember_me => "1"
+    controller.cookies["auth_token"].should_not be_nil
   end
  
   it 'does not remember me' do
-    post "login", :login => 'quentin', :password => 'test', :remember_me => "0"
-    cookies["auth_token"].should be_nil
+    controller = post "/login", :login => 'quentin', :password => 'test', :remember_me => "0"
+    controller.cookies["auth_token"].should be_nil
   end
   
   it 'deletes token on logout' do
-    get("/logout") {|request| request.stub!(:current_<%= singular_name %>).and_return(@quentin) }
-    cookies["auth_token"].should == nil
+    controller = get("/logout") {|request| request.stub!(:current_<%= singular_name %>).and_return(@quentin) }
+    controller.cookies["auth_token"].should == nil
   end
   
   
   it 'logs in with cookie' do
     @quentin.remember_me
-    get "/login" do |request|
-      request.env[Merb::Const::HTTP_COOKIE] = "auth_token=#{@quentin.remember_token}"
+    controller = get "/login" do |c|
+      c.request.env[Merb::Const::HTTP_COOKIE] = "auth_token=#{@quentin.remember_token}"
     end
     controller.should be_logged_in
   end
