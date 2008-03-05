@@ -1,4 +1,7 @@
 require 'merb_helpers'
+<% if include_activation -%>
+require 'merb-mailer'
+<% end -%>
 
 base = File.dirname(__FILE__)
 

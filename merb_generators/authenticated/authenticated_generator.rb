@@ -149,7 +149,7 @@ END
       
       # Add the routes to routes.rb
       rp = File.join(dr,"config","router.rb")
-      if File.open(init_path){|f| f.read !~ /AuthenticatedSystem\.add_routes/ }
+      if File.open(rp){|f| f.read !~ /AuthenticatedSystem/ }
         File.open(rp, 'a') do |f|
           f << "\n\nAuthenticatedSystem.add_routes rescue nil\n"
         end

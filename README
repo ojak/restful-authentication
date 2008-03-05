@@ -3,7 +3,7 @@ merbful_authentication
 
 This is a port of the rails plugin "restful_authentication" by Rick Olson to the Merb Web Framework.
 
-It is currently very freshly ported.  Please report any bugs / patches to 
+Please report any bugs / patches to 
 has.sox /at/ gmail /dot/ com
 
 You can find the original at http://svn.techno-weenie.net/projects/plugins/restful_authentication/
@@ -30,19 +30,24 @@ Datamapper
 
 === Required Routes
 
-At the moment this version of the plugin requires some named routes.  These are included in 
-lib/authenticated_system/authenticated_routes.rb
-    
-    In config/router.rb
-    
-      r.resources :users
-      r.match("/login").to(:controller => "Sessions", :action => "create").name(:login)
-      r.match("/logout").to(:controller => "Sessions", :action => "destroy").name(:logout)
-      r.match("/users/activate/:activation_code").to(:controller => "Users", :action => "activate").name(:user_activation)
+There are some routes required to use this plugin.  The actual path is unimportant but the _NAME_ of the route is.
 
+These are located in 
+lib/authenticated_system/authenticated_system_routes.rb
+
+A method is appended to routes.rb to call Authenticated.add_routes 
 
 Note:  
   When using activation don't forget to setup your mailer.
+  
+=== Dependencies
+
+There is a list of dependencies for merbful_authentication and these are loaded automatically.
+
+the dependencies are required in 
+lib/authentication_system/authentication_system_dependencies.rb
+
+Some requiring code is appended to init.rb if it is not already required.
 
 
 Copyright of original project

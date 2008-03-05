@@ -42,8 +42,14 @@ class MerbfulAuthenticationTestsGenerator < Merb::GeneratorBase
       @m = m
       
       @choices = []
-      @choices << relative(File.join(@base, "test", "mailers"))
-      @choices << relative(File.join(@base, "test", "mailers", "%singular_name%_mailer_test.rb"))
+      @choices << "test/mailers"
+      Dir[File.join(@base, "test", "mailers", "**", "*")].each do |f|
+        @choices << relative(f)
+      end
+      
+      @choices.each do |f|
+        options[f] = include_activation ? true : false
+      end
       
       @assigns = {
         :name                                   => name,  
