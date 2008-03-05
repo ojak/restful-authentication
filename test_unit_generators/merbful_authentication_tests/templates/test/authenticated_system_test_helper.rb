@@ -2,10 +2,6 @@ Merb::Config.use do |c|
   c[:session_store] = "memory"
 end
 
-[Merb::Test::ControllerHelper, Merb::Test::ViewHelper, Merb::Test::RouteHelper].each do |m|
-  Merb::Test::Helpers.send(:include, m)
-end
-
 <% if include_activation -%>
 class Merb::Mailer
   self.delivery_method = :test_send
@@ -40,7 +36,7 @@ def assert_no_difference(expressions, message = nil, &block)
 end
 
 
-def assert_response(code = :success)
+def assert_response(code = :success, controller = (@controller || nil))
   case code
   when :success
     assert_equal 200, controller.status

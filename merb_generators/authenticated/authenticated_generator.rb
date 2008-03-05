@@ -131,6 +131,29 @@ class AuthenticatedGenerator < Merb::GeneratorBase
       copy_files
       
 
+      # Add the call to include authenticated_dependencies in init.rb 
+      dr = @destination_root
+      init_path = File.join(dr,"config","init.rb")
+      if File.open(init_path){ |f| f.read !~ /authenticated_dependencies/ }
+        File.open(init_path, "a") do |f|
+          o =<<-END
+
+begin 
+  require File.join(File.dirname(__FILE__), '..', 'lib', 'authenticated_system/authenticated_dependencies') 
+rescue LoadError
+end
+END
+          f << o
+        end
+      end
+      
+      # Add the routes to routes.rb
+      rp = File.join(dr,"config","router.rb")
+      if File.open(init_path){|f| f.read !~ /AuthenticatedSystem\.add_routes/ }
+        File.open(rp, 'a') do |f|
+          f << "\n\nAuthenticatedSystem.add_routes rescue nil\n"
+        end
+      end   
       
     end
     

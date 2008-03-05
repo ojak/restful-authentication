@@ -10,9 +10,8 @@ class <%= controller_class_name %>ControllerTest < Test::Unit::TestCase
 
   def setup
     <%= class_name %>.clear_database_table
-    @controller = <%= controller_class_name %>.build(fake_request)
-    @request = @controller.request
-    @response = @controller.response
+    @controller = <%= controller_class_name %>.new(fake_request)
+    @controller.setup_session
       
     @<%= singular_name %> = <%= class_name %>.new(valid_<%= singular_name %>_hash.with(:login => 'quentin', :password => 'test', :password_confirmation => 'test'))
     @<%= singular_name %>.save
@@ -20,67 +19,72 @@ class <%= controller_class_name %>ControllerTest < Test::Unit::TestCase
     @<%= singular_name %>.activate
 <% end -%>
   end
+  
+  def test_helper_login_as_method
+    login_as :quentin
+    assert @controller.send(:logged_in?)
+  end
 
   def test_should_login_and_redirect
-    controller.params.merge!(:login => 'quentin', :password => 'test')
-    controller.dispatch(:create)
-    assert controller.session[:<%= singular_name %>]
+    @controller.params.merge!(:login => 'quentin', :password => 'test')
+    @controller._dispatch(:create)
+    assert @controller.session[:<%= singular_name %>]
     assert_response :redirect
   end
 
   def test_should_fail_login_and_not_redirect
-    controller.params.merge!(:login => 'quentin', :password => 'bad password')
-    controller.dispatch(:create)
-    assert_nil controller.session[:<%= file_name %>]
+    @controller.params.merge!(:login => 'quentin', :password => 'bad password')
+    @controller._dispatch(:create)
+    assert_nil @controller.session[:<%= file_name %>]
     assert_response :success
   end
 
   def test_should_logout
     login_as :quentin
-    controller.dispatch(:destroy)
-    assert_nil controller.session[:<%= file_name %>]
+    @controller._dispatch(:destroy)
+    assert_nil @controller.session[:<%= file_name %>]
     assert_response :redirect
   end
 
   def test_should_remember_me
-    controller.params.merge!(:login => 'quentin', :password => 'test', :remember_me => '1')
-    controller.dispatch(:create)
-    assert_not_nil controller.cookies["auth_token"]
+    @controller.params.merge!(:login => 'quentin', :password => 'test', :remember_me => '1')
+    @controller._dispatch(:create)
+    assert_not_nil @controller.cookies["auth_token"]
   end
 
   def test_should_not_remember_me
-    controller.params.merge!(:login => 'quentin', :password => 'test', :remember_me => '0')
-    controller.dispatch(:create)
-    assert_nil controller.cookies["auth_token"]
+    @controller.params.merge!(:login => 'quentin', :password => 'test', :remember_me => '0')
+    @controller._dispatch(:create)
+    assert_nil @controller.cookies["auth_token"]
   end
   
   def test_should_delete_token_on_logout
     login_as :quentin
-    controller.dispatch(:destroy)
-    assert_nil controller.cookies["auth_token"]
+    @controller._dispatch(:destroy)
+    assert_nil @controller.cookies["auth_token"]
   end
 
   def test_should_login_with_cookie
     @user.remember_me
-    controller.cookies["auth_token"] = @<%= singular_name %>.remember_token
-    controller.dispatch(:new)
-    assert controller.send(:logged_in?)
+    @controller.cookies["auth_token"] = @<%= singular_name %>.remember_token
+    @controller._dispatch(:new)
+    assert @controller.send(:logged_in?)
   end
   
   def test_should_fail_expired_cookie_login
     @<%= singular_name %>.remember_me
     @<%= singular_name %>.remember_token_expires_at = (Time.now - (5 * 60))
     @<%= singular_name %>.save
-    controller.cookies["auth_token"] = @<%= singular_name %>.remember_token
-    controller.dispatch(:new)
-    assert !(controller.send(:logged_in?))
+    @controller.cookies["auth_token"] = @<%= singular_name %>.remember_token
+    @controller._dispatch(:new)
+    assert !(@controller.send(:logged_in?))
   end
   
   def test_should_fail_cookie_login
     @<%= singular_name %>.remember_me
-    controller.cookies["auth_token"] = 'invalid_auth_token'
-    controller.dispatch(:new)
-    assert !controller.send(:logged_in?)
+    @controller.cookies["auth_token"] = 'invalid_auth_token'
+    @controller._dispatch(:new)
+    assert !@controller.send(:logged_in?)
   end
 
   protected

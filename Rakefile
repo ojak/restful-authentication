@@ -3,7 +3,7 @@ require 'rake/gempackagetask'
 
 PLUGIN = "merbful_authentication"
 NAME = "merbful_authentication"
-VERSION = "0.9.0"
+VERSION = "0.9.1"
 AUTHOR = "Daniel Neighman"
 EMAIL = "has.sox@gmail.com"
 HOMEPAGE = "http://rubyforge.org/projects/merbful-auth/"
