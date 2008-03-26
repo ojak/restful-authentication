@@ -15,39 +15,39 @@ class <%= model_controller_class_name %>Test < Test::Unit::TestCase
 
   def test_should_allow_signup
     assert_difference '<%= class_name %>.count', 1 do
-      create_<%= file_name %>
+      create_<%= model_file_name %>
       assert_equal 302, @controller.status
     end
   end
 
   def test_should_require_login_on_signup
     assert_no_difference '<%= class_name %>.count' do
-      create_<%= file_name %>(:login => nil)
-      assert @controller.assigns(:<%= file_name %>).errors.on(:login)
+      create_<%= model_file_name %>(:login => nil)
+      assert @controller.assigns(:<%= model_file_name %>).errors.on(:login)
       assert_response :success
     end
   end
 
   def test_should_require_password_on_signup
     assert_no_difference '<%= class_name %>.count' do
-      create_<%= file_name %>(:password => nil)
-      assert @controller.assigns(:<%= file_name %>).errors.on(:password)
+      create_<%= model_file_name %>(:password => nil)
+      assert @controller.assigns(:<%= model_file_name %>).errors.on(:password)
       assert_response :success
     end
   end
 
   def test_should_require_password_confirmation_on_signup
     assert_no_difference '<%= class_name %>.count' do
-      create_<%= file_name %>(:password_confirmation => nil)
-      assert @controller.assigns(:<%= file_name %>).errors.on(:password_confirmation)
+      create_<%= model_file_name %>(:password_confirmation => nil)
+      assert @controller.assigns(:<%= model_file_name %>).errors.on(:password_confirmation)
       assert_response :success
     end
   end
 
   def test_should_require_email_on_signup
     assert_no_difference '<%= class_name %>.count' do
-      create_<%= file_name %>(:email => nil)
-      assert @controller.assigns(:<%= file_name %>).errors.on(:email)
+      create_<%= model_file_name %>(:email => nil)
+      assert @controller.assigns(:<%= model_file_name %>).errors.on(:email)
       assert_response :success
     end
   end

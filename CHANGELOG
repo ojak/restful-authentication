@@ -1,3 +1,6 @@
+26th March 2008
+* Changes the generators away from an internal usage of file_name due to a conflict with merb-gen.
+
 5th March 2008
 * Changes route inclusion to be automatically appended to the routes.rb file so that it is reloaded when routes are recompiled
 * Changes to authenticated_system/authenticated_system_dependencies to use require instead of dependency  This method is not avaialble in generators.

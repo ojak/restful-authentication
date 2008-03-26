@@ -5,7 +5,7 @@ class AuthenticatedGenerator < Merb::GeneratorBase
   attr_reader   :name,  
                 :class_name, 
                 :class_path, 
-                :file_name, 
+                :model_file_name, 
                 :class_nesting, 
                 :class_nesting_depth, 
                 :plural_name, 
@@ -89,7 +89,7 @@ class AuthenticatedGenerator < Merb::GeneratorBase
       @assigns = {
         :class_name                               => class_name,
         :class_path                               => class_path, 
-        :file_name                                => file_name, 
+        :model_file_name                          => model_file_name, 
         :class_nesting                            => class_nesting, 
         :class_nesting_depth                      => class_nesting_depth, 
         :plural_name                              => plural_name, 
@@ -218,7 +218,7 @@ END
     
     def assign_names!(name)
       @name = name.singularize
-      base_name, @class_path, @file_name, @class_nesting, @class_nesting_depth = extract_modules(@name)
+      base_name, @class_path, @model_file_name, @class_nesting, @class_nesting_depth = extract_modules(@name)
       @class_name_without_nesting, @singular_name, @plural_name = inflect_names(base_name)
       @table_name = @name.pluralize
       # @table_name = (!defined?(ActiveRecord::Base) || ActiveRecord::Base.pluralize_table_names) ? plural_name : singular_name

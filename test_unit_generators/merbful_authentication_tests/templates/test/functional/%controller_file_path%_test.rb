@@ -35,14 +35,14 @@ class <%= controller_class_name %>ControllerTest < Test::Unit::TestCase
   def test_should_fail_login_and_not_redirect
     @controller.params.merge!(:login => 'quentin', :password => 'bad password')
     @controller._dispatch(:create)
-    assert_nil @controller.session[:<%= file_name %>]
+    assert_nil @controller.session[:<%= model_file_name %>]
     assert_response :success
   end
 
   def test_should_logout
     login_as :quentin
     @controller._dispatch(:destroy)
-    assert_nil @controller.session[:<%= file_name %>]
+    assert_nil @controller.session[:<%= model_file_name %>]
     assert_response :redirect
   end
 
