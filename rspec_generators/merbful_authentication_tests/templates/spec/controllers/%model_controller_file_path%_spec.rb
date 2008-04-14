@@ -16,14 +16,6 @@ describe <%= model_controller_class_name %> do
        controller.should redirect      
      end.should change(<%= class_name %>, :count).by(1)
    end
-
-   it 'requires login on signup' do
-     lambda do
-       controller = create_<%= singular_name %>(:login => nil)
-       controller.assigns(:<%= singular_name %>).errors.on(:login).should_not be_nil
-       controller.should respond_successfully
-     end.should_not change(<%= class_name %>, :count)
-   end
     
    it 'requires password on signup' do
      lambda do
@@ -59,9 +51,9 @@ describe <%= model_controller_class_name %> do
    end
 
    it 'activates <%= singular_name %>' do
-     controller = create_<%= singular_name %>(:login => "aaron", :password => "test", :password_confirmation => "test")
+     controller = create_<%= singular_name %>(:email => "aaron@example.com", :password => "test", :password_confirmation => "test")
      @<%= singular_name %> = controller.assigns(:<%= singular_name %>)
-     <%= class_name %>.authenticate('aaron', 'test').should be_nil
+     <%= class_name %>.authenticate('aaron@example.com', 'test').should be_nil
      controller = get "/<%= model_controller_singular_name %>/activate/1234" 
      controller.should redirect_to("/")
    end

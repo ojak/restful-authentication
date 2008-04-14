@@ -4,18 +4,18 @@ module AuthenticatedSystem
       # Returns true or false if the <%= singular_name %> is logged in.
       # Preloads @current_<%= singular_name %> with the <%= singular_name %> model if they're logged in.
       def logged_in?
-        current_<%= singular_name %> != :false
+        !!current_<%= singular_name %>
       end
     
       # Accesses the current <%= singular_name %> from the session.  Set it to :false if login fails
       # so that future calls do not hit the database.
       def current_<%= singular_name %>
-        @current_<%= singular_name %> ||= (login_from_session || login_from_basic_auth || login_from_cookie || :false)
+        @current_<%= singular_name %> ||= (login_from_session || login_from_basic_auth || login_from_cookie || false)
       end
     
       # Store the given <%= singular_name %> in the session.
       def current_<%= singular_name %>=(new_<%= singular_name %>)
-        session[:<%= singular_name %>] = (new_<%= singular_name %>.nil? || new_<%= singular_name %>.is_a?(Symbol)) ? nil : new_<%= singular_name %>.id
+        session[:<%= singular_name %>] = (!new_<%= singular_name %> || !new_<%= singular_name %>.kind_of?(<%= class_name %>)) ? nil : new_<%= singular_name %>.id
         @current_<%= singular_name %> = new_<%= singular_name %>
       end
     
@@ -67,10 +67,7 @@ module AuthenticatedSystem
           store_location
           redirect url(:login)
         when :xml
-          headers["Status"]             = "Unauthorized"
-          headers["WWW-Authenticate"]   = %(Basic realm="Web Password")
-          set_status(401)
-          render :text => "Couldn't authenticate you"
+          basic_authentication.request
         end
       end
     
@@ -97,37 +94,24 @@ module AuthenticatedSystem
 
       # Called from #current_<%= singular_name %>.  First attempt to login by the <%= singular_name %> id stored in the session.
       def login_from_session
-        self.current_<%= singular_name %> = <%= class_name %>.find_authenticated_model_with_id(session[:<%= singular_name %>]) if session[:<%= singular_name %>]
+        self.current_<%= singular_name %> = <%= class_name %>.find_with_conditions(:id => session[:<%= singular_name %>]) if session[:<%= singular_name %>]
       end
 
       # Called from #current_<%= singular_name %>.  Now, attempt to login by basic authentication information.
       def login_from_basic_auth
-        <%= singular_name %>name, passwd = get_auth_data
-        self.current_<%= singular_name %> = <%= class_name %>.authenticate(<%= singular_name %>name, passwd) if <%= singular_name %>name && passwd
+        basic_authentication.authenticate do |email, password|
+          self.current_<%= singular_name %> = <%= class_name %>.authenticate(email, password)
+        end
       end
 
       # Called from #current_<%= singular_name %>.  Finaly, attempt to login by an expiring token in the cookie.
       def login_from_cookie     
-        <%= singular_name %> = cookies[:auth_token] && <%= class_name %>.find_authenticated_model_with_remember_token(cookies[:auth_token])
+        <%= singular_name %> = cookies[:auth_token] && <%= class_name %>.find_with_conditions(:remember_token => cookies[:auth_token])
         if <%= singular_name %> && <%= singular_name %>.remember_token?
           <%= singular_name %>.remember_me
           cookies[:auth_token] = { :value => <%= singular_name %>.remember_token, :expires => <%= singular_name %>.remember_token_expires_at }
           self.current_<%= singular_name %> = <%= singular_name %>
         end
-      end
-    
-      def reset_session
-        session.data.each{|k,v| session.data.delete(k)}
-      end
-
-    private
-      @@http_auth_headers = %w(Authorization HTTP_AUTHORIZATION X-HTTP_AUTHORIZATION X_HTTP_AUTHORIZATION REDIRECT_X_HTTP_AUTHORIZATION)
-
-      # gets BASIC auth info
-      def get_auth_data
-        auth_key  = @@http_auth_headers.detect { |h| request.env.has_key?(h) }
-        auth_data = request.env[auth_key].to_s.split unless auth_key.blank?
-        return auth_data && auth_data[0] == 'Basic' ? Base64.decode64(auth_data[1]).split(':')[0..1] : [nil, nil] 
       end
   end
 end

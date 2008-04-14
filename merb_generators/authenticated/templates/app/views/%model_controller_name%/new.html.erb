@@ -1,10 +1,10 @@
 <%%= error_messages_for @<%= singular_name %> %>
 <%% form_for @<%= singular_name %>, :action => url(:<%= plural_name %>) do %>
   <p>
-    <%%= text_control :login, :label => "Login" %>
+    <%%= text_control :email, :label => "Email" %>
   </p>
   <p>
-    <%%= text_control :email, :label => "Email" %>
+    <%%= text_control :nickname, :label => "Nickname" %>
   </p>
   <p>
     <%%= password_control :password, :label => "Password" %>

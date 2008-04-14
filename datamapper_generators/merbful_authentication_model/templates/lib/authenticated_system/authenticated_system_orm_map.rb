@@ -1,28 +1,20 @@
 module AuthenticatedSystem
   module OrmMap
     
-    def find_authenticated_model_with_id(id)
-      <%= class_name %>.first(:id => id)
-    end
-    
-    def find_authenticated_model_with_remember_token(rt)
-      <%= class_name %>.first(:remember_token => rt)
-    end
-    
-    def find_activated_authenticated_model_with_login(login)
+    def find_active_with_conditions(conditions)
       if <%= class_name %>.instance_methods.include?("activated_at")
-        <%= class_name %>.first(:login => login, :activated_at.not => nil)
+        <%= class_name %>.first(conditions.merge(:activated_at.not => nil))
       else
-        <%= class_name %>.first(:login => login)
+        <%= class_name %>.first(conditions)
       end
-    end
-    
-    def find_activated_authenticated_model(activation_code)
-      <%= class_name %>.first(:activation_code => activation_code)
     end  
     
     def find_with_conditions(conditions)
       <%= class_name %>.first(conditions)
+    end
+    
+    def find_all_with_nick_like(condition, options = {} )
+      <%= class_name %>.all({ :nickname.like => condition }.merge(options))
     end
     
     # A method to assist with specs

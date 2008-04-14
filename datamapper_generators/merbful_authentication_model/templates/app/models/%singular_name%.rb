@@ -9,7 +9,7 @@ class <%= class_name %> < DataMapper::Base
   
   attr_accessor :password, :password_confirmation
   
-  property :login,                      :string
+  property :nickname,                      :string
   property :email,                      :string
   property :crypted_password,           :string
   property :salt,                       :string
@@ -22,8 +22,8 @@ class <%= class_name %> < DataMapper::Base
   property :created_at,                 :datetime
   property :updated_at,                 :datetime
   
-  validates_length_of         :login,                   :within => 3..40
-  validates_uniqueness_of     :login
+  validates_length_of         :nickname,                   :within => 3..40
+  validates_uniqueness_of     :nickname
   validates_presence_of       :email
   # validates_format_of         :email,                   :as => :email_address
   validates_length_of         :email,                   :within => 3..100
@@ -34,13 +34,14 @@ class <%= class_name %> < DataMapper::Base
   validates_confirmation_of   :password,                :groups => :create
     
   before_save :encrypt_password
+  before_validation :set_nickname
 <% if include_activation -%>
   before_create :make_activation_code
   after_create :send_signup_notification
 <% end -%>
   
-  def login=(value)
-    @login = value.downcase unless value.nil?
+  def nickname=(value)
+    @nickname = value.downcase unless value.nil?
   end
     
 <% if include_activation -%>  

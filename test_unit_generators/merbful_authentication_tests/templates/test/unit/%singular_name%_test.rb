@@ -11,18 +11,18 @@ class <%= class_name %>Test < Test::Unit::TestCase
   def setup
     <%= class_name %>.clear_database_table
     @<%= singular_name %>_1 = <%= class_name %>.new(valid_<%= singular_name %>_hash.with(
-                  :login                  => 'quentin',
+                  :nickname                  => 'quentin',
                   :email                  => 'quentin@example.com',
                   :password               => 'test',
                   :password_confirmation  => 'test',
                   :created_at             => Time.now - (5 * Merb::Const::DAY)
                 ))
     @<%= singular_name %>_2 = User.new(valid_user_hash.with(
-                  :login              => 'aaron',
-                  :email              => 'aaron@example.com',
-                  :password               => 'test',
-                  :password_confirmation  => 'test',
-                  :created_at         => Time.now - (1 * Merb::Const::DAY)
+                  :nickname              => 'aaron',
+                  :email                 => 'aaron@example.com',
+                  :password              => 'test',
+                  :password_confirmation => 'test',
+                  :created_at            => Time.now - (1 * Merb::Const::DAY)
                 ))   
     @<%= singular_name %>_1.save  
     @<%= singular_name %>_2.save
@@ -35,8 +35,8 @@ class <%= class_name %>Test < Test::Unit::TestCase
     @<%= singular_name %>_2.activate
 <% end -%>
     # Reload from the db to get the right object
-    @<%= singular_name %>_1 = <%= class_name %>.find_with_conditions(:login => 'quentin')
-    @<%= singular_name %>_2 = <%= class_name %>.find_with_conditions(:login => 'aaron')
+    @<%= singular_name %>_1 = <%= class_name %>.find_with_conditions(:nickname => 'quentin')
+    @<%= singular_name %>_2 = <%= class_name %>.find_with_conditions(:nickname => 'aaron')
     
   end
     
@@ -44,13 +44,6 @@ class <%= class_name %>Test < Test::Unit::TestCase
     assert_difference '<%= class_name %>.count' do
       <%= singular_name %> = create_<%= singular_name %>
       assert !<%= singular_name %>.new_record?, "#{<%= singular_name %>.errors.to_yaml}"
-    end
-  end
-
-  def test_should_require_login
-    assert_no_difference '<%= class_name %>.count' do
-      u = create_<%= singular_name %>(:login => nil)
-      assert u.errors.on(:login)
     end
   end
 
@@ -79,19 +72,19 @@ class <%= class_name %>Test < Test::Unit::TestCase
     @<%= singular_name %>_1.password = 'new password'
     @<%= singular_name %>_1.password_confirmation = 'new password'
     @<%= singular_name %>_1.save
-    @<%= singular_name %>_1 = <%= class_name %>.find_with_conditions(:login => @<%= singular_name %>_1.login)
+    @<%= singular_name %>_1 = <%= class_name %>.find_with_conditions(:email => @<%= singular_name %>_1.email)
     assert_equal @<%= singular_name %>_1, <%= class_name %>.authenticate('quentin', 'new password')
   end
 
   def test_should_not_rehash_password
-    @<%= singular_name %>_1.login = 'quentin2'
+    @<%= singular_name %>_1.email = 'quentin2@example.com'
     @<%= singular_name %>_1.save
-    @<%= singular_name %>_1 = <%= class_name %>.find_with_conditions(:login => 'quentin2')
-    assert_equal @<%= singular_name %>_1, <%= class_name %>.authenticate('quentin2', 'test')
+    @<%= singular_name %>_1 = <%= class_name %>.find_with_conditions(:email => 'quentin2@example.com')
+    assert_equal @<%= singular_name %>_1, <%= class_name %>.authenticate('quentin2@example.com', 'test')
   end
 
   def test_should_authenticate_<%= singular_name %>
-    assert_equal @<%= singular_name %>_1, <%= class_name %>.authenticate('quentin', 'test')
+    assert_equal @<%= singular_name %>_1, <%= class_name %>.authenticate('quentin@example.com', 'test')
   end
 
   def test_should_set_remember_token
@@ -135,7 +128,7 @@ class <%= class_name %>Test < Test::Unit::TestCase
 
 protected
   def create_<%= singular_name %>(options = {})
-    u = <%= class_name %>.new({ :login => 'quire', :email => 'quire@example.com', :password => 'quire', :password_confirmation => 'quire' }.merge(options))
+    u = <%= class_name %>.new({ :nickname => 'quire', :email => 'quire@example.com', :password => 'quire', :password_confirmation => 'quire' }.merge(options))
     u.save
     u    
   end

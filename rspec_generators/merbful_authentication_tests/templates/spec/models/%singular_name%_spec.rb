@@ -12,34 +12,59 @@ describe <%= class_name %> do
 <% end -%>
   end
 
-  it "should have a login field" do
+  it "should have a nickname field" do
     <%= singular_name %> = <%= class_name %>.new
-    <%= singular_name %>.should respond_to(:login)
+    <%= singular_name %>.should respond_to(:nickname)
     <%= singular_name %>.valid?
-    <%= singular_name %>.errors.on(:login).should_not be_nil
+    <%= singular_name %>.errors.on(:nickname).should_not be_nil
   end
   
-  it "should fail login if there are less than 3 chars" do
-    <%= singular_name %> = <%= class_name %>.new
-    <%= singular_name %>.login = "AB"
-    <%= singular_name %>.valid?
-    <%= singular_name %>.errors.on(:login).should_not be_nil
+  it "should add on some random numbers on the end if the <%= singular_name %>name is already taken" do 
+    hash = valid_<%= singular_name %>_hash.except(:nickname)
+    hash[:email] = "homer@simpsons.com"
+    u1 = <%= class_name %>.new(hash)
+    u1.save
+    u1.should_not be_new_record
+    u1.nickname.should == "homer"
+    
+    h2 = valid_<%= singular_name %>_hash.except(:nickname)
+    h2[:email] = "homer@shelbyvile.com"
+    u2 = <%= class_name %>.new(h2)
+    u2.save
+    u2.should_not be_new_record
+    u2.nickname.should match(/homer\d{3}/)
+    u2.nickname.should == "homer000"
+    
+    h3 = valid_<%= singular_name %>_hash.except(:nickname)
+    h3[:email] = "homer@hotmail.com"
+    u3 = <%= class_name %>.new(h3)
+    u3.save
+    u3.should_not be_new_record
+    u3.nickname.should match(/homer\d{3}/)
+    u3.nickname.should == "homer001"
   end
   
-  it "should not fail login with between 3 and 40 chars" do
+  it "should fail nickname if there are less than 3 chars" do
+    <%= singular_name %> = <%= class_name %>.new
+    <%= singular_name %>.nickname = "AB"
+    <%= singular_name %>.valid?
+    <%= singular_name %>.errors.on(:nickname).should_not be_nil
+  end
+  
+  it "should not fail nickname with between 3 and 40 chars" do
     <%= singular_name %> = <%= class_name %>.new
     [3,40].each do |num|
-      <%= singular_name %>.login = "a" * num
+      <%= singular_name %>.nickname = "a" * num
       <%= singular_name %>.valid?
-      <%= singular_name %>.errors.on(:login).should be_nil
+      <%= singular_name %>.errors.on(:nickname).should be_nil
     end
   end
   
-  it "should fail login with over 90 chars" do
+  it "should fail nickname with over 90 chars" do
     <%= singular_name %> = <%= class_name %>.new
-    <%= singular_name %>.login = "A" * 41
+    <%= singular_name %>.nickname = "A" * 41
     <%= singular_name %>.valid?
-    <%= singular_name %>.errors.on(:login).should_not be_nil    
+    <%= singular_name %>.errors.on(:nickname).should_not be_nil    
   end
   
   it "should make a valid <%= singular_name %>" do
@@ -49,28 +74,28 @@ describe <%= class_name %> do
     
   end
   
-  it "should make sure login is unique" do
-    <%= singular_name %> = <%= class_name %>.new( valid_<%= singular_name %>_hash.with(:login => "Daniel") )
-    <%= singular_name %>2 = <%= class_name %>.new( valid_<%= singular_name %>_hash.with(:login => "Daniel"))
+  it "should make sure nickname is unique" do
+    <%= singular_name %> = <%= class_name %>.new( valid_<%= singular_name %>_hash.with(:nickname => "Daniel") )
+    <%= singular_name %>2 = <%= class_name %>.new( valid_<%= singular_name %>_hash.with(:nickname => "Daniel"))
     <%= singular_name %>.save.should be_true
-    <%= singular_name %>.login = "Daniel"
+    <%= singular_name %>.nickname = "Daniel"
     <%= singular_name %>2.save.should be_false
-    <%= singular_name %>2.errors.on(:login).should_not be_nil
+    <%= singular_name %>2.errors.on(:nickname).should_not be_nil
   end
   
-  it "should make sure login is unique regardless of case" do
-    <%= class_name %>.find_with_conditions(:login => "Daniel").should be_nil
-    <%= singular_name %> = <%= class_name %>.new( valid_<%= singular_name %>_hash.with(:login => "Daniel") )
-    <%= singular_name %>2 = <%= class_name %>.new( valid_<%= singular_name %>_hash.with(:login => "daniel"))
+  it "should make sure nickname is unique regardless of case" do
+    <%= class_name %>.find_with_conditions(:nickname => "Daniel").should be_nil
+    <%= singular_name %> = <%= class_name %>.new( valid_<%= singular_name %>_hash.with(:nickname => "Daniel") )
+    <%= singular_name %>2 = <%= class_name %>.new( valid_<%= singular_name %>_hash.with(:nickname => "daniel"))
     <%= singular_name %>.save.should be_true
-    <%= singular_name %>.login = "Daniel"
+    <%= singular_name %>.nickname = "Daniel"
     <%= singular_name %>2.save.should be_false
-    <%= singular_name %>2.errors.on(:login).should_not be_nil
+    <%= singular_name %>2.errors.on(:nickname).should_not be_nil
   end
   
-  it "should downcase logins" do
-    <%= singular_name %> = <%= class_name %>.new( valid_<%= singular_name %>_hash.with(:login => "DaNieL"))
-    <%= singular_name %>.login.should == "daniel"    
+  it "should downcase nicknames" do
+    <%= singular_name %> = <%= class_name %>.new( valid_<%= singular_name %>_hash.with(:nickname => "DaNieL"))
+    <%= singular_name %>.nickname.should == "daniel"    
   end  
   
   it "should authenticate a <%= singular_name %> using a class method" do
@@ -79,7 +104,7 @@ describe <%= class_name %> do
 <% if include_activation -%>
     <%= singular_name %>.activate
 <% end -%>
-    <%= class_name %>.authenticate(valid_<%= singular_name %>_hash[:login], valid_<%= singular_name %>_hash[:password]).should_not be_nil
+    <%= class_name %>.authenticate(valid_<%= singular_name %>_hash[:email], valid_<%= singular_name %>_hash[:password]).should_not be_nil
   end
   
   it "should not authenticate a <%= singular_name %> using the wrong password" do
@@ -88,15 +113,15 @@ describe <%= class_name %> do
 <% if include_activation -%>  
     <%= singular_name %>.activate
 <% end -%>
-    <%= class_name %>.authenticate(valid_<%= singular_name %>_hash[:login], "not_the_password").should be_nil
+    <%= class_name %>.authenticate(valid_<%= singular_name %>_hash[:email], "not_the_password").should be_nil
   end
   
-  it "should not authenticate a <%= singular_name %> using the wrong login" do
+  it "should not authenticate a <%= singular_name %> using the wrong nickname" do
     <%= singular_name %> = <%= class_name %>.create(valid_<%= singular_name %>_hash)  
 <% if include_activation -%>  
     <%= singular_name %>.activate
 <% end -%>
-    <%= class_name %>.authenticate("not_the_login", valid_<%= singular_name %>_hash[:password]).should be_nil
+    <%= class_name %>.authenticate("not_the_login@blah.com", valid_<%= singular_name %>_hash[:password]).should be_nil
   end
   
   it "should not authenticate a <%= singular_name %> that does not exist" do
@@ -119,7 +144,7 @@ describe <%= class_name %> do
     <%= singular_name %> = <%= class_name %>.new(valid_<%= singular_name %>_hash)
     <%= singular_name %>.save
     <%= class_name %>Mailer.should_not_receive(:signup_notification)
-    <%= singular_name %>.login = "not in the valid hash for login"
+    <%= singular_name %>.nickname = "not in the valid hash for nickname"
     <%= singular_name %>.save    
   end
 <% end -%>  
@@ -204,10 +229,10 @@ describe <%= class_name %>, "the password fields for <%= class_name %>" do
   
   it "should not require a password when saving an existing <%= singular_name %>" do
     <%= singular_name %> = <%= class_name %>.create(valid_<%= singular_name %>_hash)
-    <%= singular_name %> = <%= class_name %>.find_with_conditions(:login => valid_<%= singular_name %>_hash[:login])
+    <%= singular_name %> = <%= class_name %>.find_with_conditions(:nickname => valid_<%= singular_name %>_hash[:nickname])
     <%= singular_name %>.password.should be_nil
     <%= singular_name %>.password_confirmation.should be_nil
-    <%= singular_name %>.login = "some_different_login_to_allow_saving"
+    <%= singular_name %>.nickname = "some_different_nickname_to_allow_saving"
     (<%= singular_name %>.save).should be_true
   end
   
@@ -248,7 +273,7 @@ describe <%= class_name %>, "activation" do
     @<%= singular_name %>.save
     @<%= singular_name %>.activate
     @<%= singular_name %>.should be_activated
-    <%= class_name %>.find_with_conditions(:login => valid_<%= singular_name %>_hash[:login]).should be_activated
+    <%= class_name %>.find_with_conditions(:email => valid_<%= singular_name %>_hash[:email]).should be_activated
   end
   
   it "should should show recently activated when the instance is activated" do
@@ -260,7 +285,7 @@ describe <%= class_name %>, "activation" do
   it "should not show recently activated when the instance is fresh" do
     @<%= singular_name %>.activate
     @<%= singular_name %> = nil
-    <%= class_name %>.find_with_conditions(:login => valid_<%= singular_name %>_hash[:login]).should_not be_recently_activated
+    <%= class_name %>.find_with_conditions(:email => valid_<%= singular_name %>_hash[:email]).should_not be_recently_activated
   end
   
   it "should send out a welcome email to confirm that the account is activated" do
@@ -313,7 +338,7 @@ describe <%= class_name %>, "remember_me" do
     @<%= singular_name %>.remember_me_until(time)
     @<%= singular_name %>.remember_token.should_not be_nil
     @<%= singular_name %>.save
-    <%= class_name %>.find_with_conditions(:login => valid_<%= singular_name %>_hash[:login]).remember_token.should_not be_nil
+    <%= class_name %>.find_with_conditions(:nickname => valid_<%= singular_name %>_hash[:nickname]).remember_token.should_not be_nil
   end
   
   it "should remember me for" do
@@ -344,12 +369,12 @@ describe <%= class_name %>, "remember_me" do
     @<%= singular_name %>.remember_me
     @<%= singular_name %>.save
     
-    @<%= singular_name %> = <%= class_name %>.find_with_conditions(:login => valid_<%= singular_name %>_hash[:login])
+    @<%= singular_name %> = <%= class_name %>.find_with_conditions(:email => valid_<%= singular_name %>_hash[:email])
     @<%= singular_name %>.remember_token.should_not be_nil
     
     @<%= singular_name %>.forget_me
 
-    @<%= singular_name %> = <%= class_name %>.find_with_conditions(:login => valid_<%= singular_name %>_hash[:login])
+    @<%= singular_name %> = <%= class_name %>.find_with_conditions(:email => valid_<%= singular_name %>_hash[:email])
     @<%= singular_name %>.remember_token.should be_nil
     @<%= singular_name %>.remember_token_expires_at.should be_nil
   end

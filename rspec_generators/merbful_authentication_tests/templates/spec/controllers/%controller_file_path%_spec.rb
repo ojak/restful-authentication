@@ -8,7 +8,7 @@ describe "<%= controller_class_name %> Controller", "index action" do
   
   before(:each) do
     <%= class_name %>.clear_database_table
-    @quentin = <%= class_name %>.create(valid_<%= singular_name %>_hash.with(:login => "quentin", :password => "test", :password_confirmation => "test"))
+    @quentin = <%= class_name %>.create(valid_<%= singular_name %>_hash.with(:email => "quentin@example.com", :password => "test", :password_confirmation => "test"))
     @controller = <%= controller_class_name %>.new(fake_request)
 <% if include_activation -%>
     @quentin.activate
@@ -48,14 +48,14 @@ describe "<%= controller_class_name %> Controller", "index action" do
   end
 
   it 'logins and redirects' do
-    controller = post "/login", :login => 'quentin', :password => 'test'
+    controller = post "/login", :email => 'quentin@example.com', :password => 'test'
     controller.session[:<%= singular_name %>].should_not be_nil
     controller.session[:<%= singular_name %>].should == @quentin.id
     controller.should redirect_to("/")
   end
    
   it 'fails login and does not redirect' do
-    controller = post "/login", :login => 'quentin', :password => 'bad password'
+    controller = post "/login", :email => 'quentin@example.com', :password => 'bad password'
     controller.session[:<%= singular_name %>].should be_nil
     controller.should be_successful
   end
@@ -67,12 +67,12 @@ describe "<%= controller_class_name %> Controller", "index action" do
   end
 
   it 'remembers me' do
-    controller = post "/login", :login => 'quentin', :password => 'test', :remember_me => "1"
+    controller = post "/login", :email => 'quentin@example.com', :password => 'test', :remember_me => "1"
     controller.cookies["auth_token"].should_not be_nil
   end
  
   it 'does not remember me' do
-    controller = post "/login", :login => 'quentin', :password => 'test', :remember_me => "0"
+    controller = post "/login", :email => 'quentin@example.com', :password => 'test', :remember_me => "0"
     controller.cookies["auth_token"].should be_nil
   end
   

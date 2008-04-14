@@ -20,10 +20,10 @@ class <%= model_controller_class_name %>Test < Test::Unit::TestCase
     end
   end
 
-  def test_should_require_login_on_signup
+  def test_should_require_email_on_signup
     assert_no_difference '<%= class_name %>.count' do
-      create_<%= model_file_name %>(:login => nil)
-      assert @controller.assigns(:<%= model_file_name %>).errors.on(:login)
+      create_<%= model_file_name %>(:email => nil)
+      assert @controller.assigns(:<%= model_file_name %>).errors.on(:email)
       assert_response :success
     end
   end
@@ -53,30 +53,30 @@ class <%= model_controller_class_name %>Test < Test::Unit::TestCase
   end
   <% if options[:include_activation] %>
     def test_should_activate_user
-      create_<%= singular_name %>( :login => 'aaron', :password => "test", :password_confirmation => "test")
-      @<%= singular_name %> = <%= class_name %>.find_with_conditions( :login => 'aaron' )
+      create_<%= singular_name %>( :email => 'aaron@example.com', :password => "test", :password_confirmation => "test")
+      @<%= singular_name %> = <%= class_name %>.find_with_conditions( :email => 'aaron@example.com' )
       assert_not_nil @<%= singular_name %>
-      assert_nil <%= class_name %>.authenticate('aaron', 'test')
+      assert_nil <%= class_name %>.authenticate('aaron@example.com', 'test')
       @controller = get @controller.url(:<%= singular_name %>_activation, :activation_code => @<%= singular_name %>.activation_code )
       assert_equal '/', @controller.headers['Location']
       assert_response :redirect
     end
 
     def test_should_not_activate_user_without_key
-      create_<%= singular_name %>( :login => 'aaron', :password => "test", :password_confirmation => "test")
-      @<%= singular_name %> = <%= class_name %>.find_with_conditions( :login => 'aaron' )
+      create_<%= singular_name %>( :email => 'aaron@example.com', :password => "test", :password_confirmation => "test")
+      @<%= singular_name %> = <%= class_name %>.find_with_conditions( :email => 'aaron@example.com' )
       assert_not_nil @<%= singular_name %>
-      assert_nil <%= class_name %>.authenticate('aaron', 'test')
-      assert_nil User.authenticate('aaron', 'test')
+      assert_nil <%= class_name %>.authenticate('aaron@example.com', 'test')
+      assert_nil User.authenticate('aaron@example.com', 'test')
     end
 
     def test_should_not_activate_user_with_blank_key
-      create_<%= singular_name %>( :login => 'aaron', :password => "test", :password_confirmation => "test")
-      @<%= singular_name %> = <%= class_name %>.find_with_conditions( :login => 'aaron' )
+      create_<%= singular_name %>( :email => 'aaron@example.com', :password => "test", :password_confirmation => "test")
+      @<%= singular_name %> = <%= class_name %>.find_with_conditions( :email => 'aaron@example.com' )
       assert_not_nil @<%= singular_name %>
-      assert_nil <%= class_name %>.authenticate('aaron', 'test')
+      assert_nil <%= class_name %>.authenticate('aaron@example.com', 'test')
       @controller = get @controller.url(:user_activation, :activation_code => " ")
-      assert_nil <%= class_name %>.authenticate('aaron', 'test')
+      assert_nil <%= class_name %>.authenticate('aaron@example.com', 'test')
     end<% end %>
 
   protected

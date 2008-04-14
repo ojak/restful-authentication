@@ -9,7 +9,7 @@ class <%= controller_class_name %> < Application
   end
 
   def create
-    self.current_<%= singular_name %> = <%= class_name %>.authenticate(params[:login], params[:password])
+    self.current_<%= singular_name %> = <%= class_name %>.authenticate(params[:email], params[:password])
     if logged_in?
       if params[:remember_me] == "1"
         self.current_<%= singular_name %>.remember_me
@@ -24,7 +24,7 @@ class <%= controller_class_name %> < Application
   def destroy
     self.current_<%= singular_name %>.forget_me if logged_in?
     cookies.delete :auth_token
-    reset_session
+    session.delete
     redirect_back_or_default('/')
   end
   

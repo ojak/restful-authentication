@@ -10,7 +10,7 @@ describe <%= class_name %>Mailer do
   end
   
   before(:each) do
-    @u = <%= class_name %>.new(:email => "homer@simpsons.com", :login => "homer", :activation_code => "12345")
+    @u = <%= class_name %>.new(:email => "homer@simpsons.com", :nickname => "homer", :activation_code => "12345")
     @mailer_params = { :from      => "info@mysite.com",
                        :to        => @u.email,
                        :subject   => "Welcome to MySite.com" }
@@ -32,12 +32,12 @@ describe <%= class_name %>Mailer do
   
   it "should mention the <%= plural_name %> login in the text signup mail" do
     deliver(:signup_notification, @mailer_params, :<%= singular_name %> => @u)
-    @delivery.text.should include(@u.login)
+    @delivery.text.should include(@u.email)
   end
   
   it "should mention the <%= plural_name %> login in the HTML signup mail" do
     deliver(:signup_notification, @mailer_params, :<%= singular_name %> => @u)
-    @delivery.html.should include(@u.login)
+    @delivery.html.should include(@u.email)
   end
   
   it "should mention the activation link in the signup emails" do
@@ -60,11 +60,11 @@ describe <%= class_name %>Mailer do
   
   it "should mention ther <%= plural_name %> login in the text activation mail" do
     deliver(:activation_notification, @mailer_params, :<%= singular_name %> => @u)
-    @delivery.text.should include(@u.login)
+    @delivery.text.should include(@u.email)
   end
 
   it "should mention the suers login in the html activation mail" do
     deliver(:activation_notification, @mailer_params, :<%= singular_name %> => @u)
-    @delivery.html.should include(@u.login)    
+    @delivery.html.should include(@u.email)    
   end
 end

@@ -6,7 +6,7 @@ include <%= class_name %>TestHelper
 class <%= class_name %>MailerTest < Test::Unit::TestCase
 
   def setup
-    @<%= singular_name %> = <%= class_name %>.new(:email => "homer@simpsons.com", :login => "homer", :activation_code => "12345")
+    @<%= singular_name %> = <%= class_name %>.new(:email => "homer@simpsons.com", :nickname => "homer", :activation_code => "12345")
     @mailer_params = { :from      => "info@mysite.com",
                        :to        => @<%= singular_name %>.email,
                        :subject   => "Welcome to MySite.com" }
@@ -26,14 +26,14 @@ class <%= class_name %>MailerTest < Test::Unit::TestCase
     assert @delivery.assigns(:headers).any? {|v| v == "from: info@mysite.com"} 
   end
   
-  def test_signup_email_should_mention_the_login_name
+  def test_signup_email_should_mention_the_nickname_name
     deliver(:signup_notification, @mailer_params, :<%= singular_name %> => @<%= singular_name %>)
-    assert_match %r(#{@<%= singular_name %>.login}), @delivery.text
+    assert_match %r(#{@<%= singular_name %>.nickname}), @delivery.text
   end
 
-  def test_signup_html_email_should_mention_the_login_name
+  def test_signup_html_email_should_mention_the_nickname_name
     deliver(:signup_notification, @mailer_params, :<%= singular_name %> => @<%= singular_name %>)
-    assert_match %r(#{@<%= singular_name %>.login}), @delivery.html
+    assert_match %r(#{@<%= singular_name %>.nickname}), @delivery.html
   end
 
   def test_signup_email_should_mention_the_activation_link
@@ -52,10 +52,10 @@ class <%= class_name %>MailerTest < Test::Unit::TestCase
     assert @delivery.assigns(:headers).any?{|v| v == "from: info@mysite.com"}
   end
   
-  def test_should_mention_the_login_in_the_activation_email
+  def test_should_mention_the_nickname_in_the_activation_email
     deliver(:activation_notification, @mailer_params, :<%= singular_name %> => @<%= singular_name %>)
-    assert_match %r(#{@<%= singular_name %>.login}), @delivery.text
-    assert_match %r(#{@<%= singular_name %>.login}), @delivery.html
+    assert_match %r(#{@<%= singular_name %>.email}), @delivery.text
+    assert_match %r(#{@<%= singular_name %>.email}), @delivery.html
   end
   private
   def deliver(action, mail_opts= {},opts = {})

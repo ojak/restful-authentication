@@ -23,7 +23,7 @@ class <%= model_controller_class_name %> < Application
   
 <% if include_activation -%>
   def activate
-    self.current_<%= singular_name %> = <%= class_name %>.find_activated_authenticated_model(params[:activation_code])
+    self.current_<%= singular_name %> = <%= class_name %>.find_active_with_conditions(:activation_code => params[:activation_code])
     if logged_in? && !current_<%= singular_name %>.active?
       current_<%= singular_name %>.activate
     end

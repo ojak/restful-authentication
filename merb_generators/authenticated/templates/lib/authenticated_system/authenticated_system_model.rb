@@ -16,7 +16,7 @@ module AuthenticatedSystem
       # before filter 
       def encrypt_password
         return if password.blank?
-        self.salt = Digest::SHA1.hexdigest("--#{Time.now.to_s}--#{login}--") if new_record?
+        self.salt = Digest::SHA1.hexdigest("--#{Time.now.to_s}--#{nickname}--") if new_record?
         self.crypted_password = encrypt(password)
       end
       
@@ -76,6 +76,28 @@ module AuthenticatedSystem
       def password_required?
         crypted_password.blank? || !password.blank?
       end
+      
+      def set_nickname
+        return true unless self.new_record?
+        return true unless self.nickname.nil?
+        return false if self.email.nil?
+        if self.nickname.nil?
+          nick = self.email.split("@").first
+          # Check that that nick is not taken
+          taken_nicks = self.class.find_all_with_nick_like("#{nick}%", :order => "nickname DESC", :limit => 1).map{|u| u.nickname}
+          if taken_nicks.empty?
+            self.nickname = nick
+          else
+            taken_nicks.first =~ /(\d*)$/
+            if $1.empty?
+              self.nickname = "#{nick}000"
+            else
+              self.nickname ="#{nick}#{$1.succ}"
+            end
+          end
+        end
+        true
+      end
             
     end
     
@@ -86,8 +108,8 @@ module AuthenticatedSystem
       end
       
       # Authenticates a <%= singular_name %> by their login name and unencrypted password.  Returns the <%= singular_name %> or nil.
-      def authenticate(login, password)
-        u = find_activated_authenticated_model_with_login(login) # need to get the salt
+      def authenticate(email, password)
+        u = find_active_with_conditions(:email => email) # need to get the salt
         u && u.authenticated?(password) ? u : nil
       end
     end
