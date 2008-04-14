@@ -3,7 +3,7 @@ require 'rake/gempackagetask'
 
 PLUGIN = "merbful_authentication"
 NAME = "merbful_authentication"
-VERSION = "0.9.2"
+VERSION = "0.10.0"
 AUTHOR = "Daniel Neighman"
 EMAIL = "has.sox@gmail.com"
 HOMEPAGE = "http://rubyforge.org/projects/merbful-auth/"
@@ -20,7 +20,7 @@ spec = Gem::Specification.new do |s|
   s.author = AUTHOR
   s.email = EMAIL
   s.homepage = HOMEPAGE
-  s.add_dependency('merb-core', '>= 0.9.0')
+  s.add_dependency('merb-core', '>= 0.9.2')
   s.add_dependency('merb-gen')
   s.require_path = 'lib'
   s.autorequire = PLUGIN
