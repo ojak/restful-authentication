@@ -80,11 +80,11 @@ module AuthenticatedSystem
       def set_nickname
         return true unless self.new_record?
         return true unless self.nickname.nil?
-        return false if self.email.nil?
+        return nil if self.email.nil?
         if self.nickname.nil?
           nick = self.email.split("@").first
           # Check that that nick is not taken
-          taken_nicks = self.class.find_all_with_nick_like("#{nick}%", :order => "nickname DESC", :limit => 1).map{|u| u.nickname}
+          taken_nicks = self.class.find_all_with_nick_like("#{nick}%").map{|u| u.nickname}
           if taken_nicks.empty?
             self.nickname = nick
           else

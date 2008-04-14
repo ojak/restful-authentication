@@ -1,28 +1,24 @@
 module AuthenticatedSystem
   module OrmMap
     
-    def find_authenticated_model_with_id(id)
-      <%= class_name %>.find_by_id(id)
-    end
-    
-    def find_authenticated_model_with_remember_token(rt)
-      <%= class_name %>.find_by_remember_token(rt)
-    end
-    
-    def find_activated_authenticated_model_with_login(login)
+    def find_active_with_conditions(conditions)
       if <%= class_name %>.instance_methods.include?("activated_at")
-        <%= class_name %>.find(:first, :conditions => ["login=? AND activated_at IS NOT NULL", login])
+        <%= class_name %>.with_scope(:find => {:conditions => "activated_at IS NOT NULL"}) do
+          <%= class_name %>.find(:first, :conditions => conditions)
+        end
       else
-        <%= class_name %>.find_by_login(login)
+        <%= class_name %>.find(:first, :conditions => conditions)
       end
-    end
-    
-    def find_activated_authenticated_model(activation_code)
-      <%= class_name %>.find_by_activation_code(activation_code)
     end  
     
     def find_with_conditions(conditions)
       <%= class_name %>.find(:first, :conditions => conditions)
+    end
+    
+    def find_all_with_nick_like(nick)
+      <%= class_name %>.with_scope(:find => {:order => "nickname DESC", :limit => 1}) do
+        <%= class_name %>.find(:all, :conditions => ["nickname LIKE ?", nick])
+      end
     end
     
     # A method to assist with specs

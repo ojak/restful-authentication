@@ -13,8 +13,8 @@ module AuthenticatedSystem
       <%= class_name %>.first(conditions)
     end
     
-    def find_all_with_nick_like(condition, options = {} )
-      <%= class_name %>.all({ :nickname.like => condition }.merge(options))
+    def find_all_with_nick_like(nick)
+      <%= class_name %>.all({ :nickname.like => nick, :order => "created_at DESC", :limit =>1 })
     end
     
     # A method to assist with specs
