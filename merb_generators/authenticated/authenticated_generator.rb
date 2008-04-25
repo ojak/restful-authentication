@@ -44,7 +44,7 @@ class AuthenticatedGenerator < Merb::GeneratorBase
     @include_activation = options[:include_activation]
     
     @controller_name = runtime_args.shift || 'sessions'
-    @model_controller_name = @name.pluralize
+    @model_controller_name = @name.snake_case.pluralize
     @mailer_controller_name = @name
     
     # sessions controller
@@ -58,7 +58,7 @@ class AuthenticatedGenerator < Merb::GeneratorBase
     end
     @controller_full_path = File.join(controller_class_path, controller_file_name)
     @controller_view_path = File.join("app/views", @controller_full_path)
-
+    
     # model controller
     base_name, @model_controller_class_path, @model_controller_file_path, @model_controller_class_nesting, @model_controller_class_nesting_depth = extract_modules(@model_controller_name)
     @model_controller_class_name_without_nesting, @model_controller_singular_name, @model_controller_plural_name = inflect_names(base_name)
@@ -70,6 +70,7 @@ class AuthenticatedGenerator < Merb::GeneratorBase
     end    
     @model_controller_full_path = File.join(model_controller_class_path, model_controller_file_name)
     @model_controller_view_path = File.join("app/views", @model_controller_full_path)
+    
   end
 
   def manifest
@@ -85,7 +86,7 @@ class AuthenticatedGenerator < Merb::GeneratorBase
       @choices.each do |f|
         options[f] = options[:include_activation] ? true : false
       end
-
+      
       @assigns = {
         :class_name                               => class_name,
         :class_path                               => class_path, 
