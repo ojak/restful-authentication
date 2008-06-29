@@ -4,39 +4,41 @@ begin
 rescue 
   nil
 end
-class <%= class_name %> < DataMapper::Base
+class <%= class_name %>
+  include DataMapper::Resource
   include AuthenticatedSystem::Model
   
   attr_accessor :password, :password_confirmation
-  
-  property :login,                      :string
-  property :email,                      :string
-  property :crypted_password,           :string
-  property :salt,                       :string
+
+  property :id,                         Integer,    :serial => true
+  property :login,                      String
+  property :email,                      String
+  property :crypted_password,           String
+  property :salt,                       String
 <% if include_activation -%>
-  property :activation_code,            :string
-  property :activated_at,               :datetime
+  property :activation_code,            String
+  property :activated_at,               DateTime
 <% end -%>
-  property :remember_token_expires_at,  :datetime
-  property :remember_token,             :string
-  property :created_at,                 :datetime
-  property :updated_at,                 :datetime
-  
-  validates_length_of         :login,                   :within => 3..40
-  validates_uniqueness_of     :login
-  validates_presence_of       :email
-  # validates_format_of         :email,                   :as => :email_address
-  validates_length_of         :email,                   :within => 3..100
-  validates_uniqueness_of     :email
-  validates_presence_of       :password,                :if => proc {password_required?}
-  validates_presence_of       :password_confirmation,   :if => proc {password_required?}
-  validates_length_of         :password,                :within => 4..40, :if => proc {password_required?}
-  validates_confirmation_of   :password,                :groups => :create
-    
-  before_save :encrypt_password
+  property :remember_token_expires_at,  DateTime
+  property :remember_token,             String
+  property :created_at,                 DateTime
+  property :updated_at,                 DateTime
+
+  validates_length            :login,                   :in => 3..40
+  validates_is_unique         :login
+  validates_present           :email
+  # validates_format            :email,                   :as => :email_address
+  validates_length            :email,                   :in => 3..100
+  validates_is_unique         :email
+  validates_present           :password,                :if => proc {password_required?}
+  validates_present           :password_confirmation,   :if => proc {password_required?}
+  validates_length            :password,                :in => 4..40, :if => proc {password_required?}
+  validates_is_confirmed      :password,                :groups => :create
+
+  before :save, :encrypt_password
 <% if include_activation -%>
-  before_create :make_activation_code
-  after_create :send_signup_notification
+  before :create :make_activation_code
+  after :create :send_signup_notification
 <% end -%>
   
   def login=(value)
